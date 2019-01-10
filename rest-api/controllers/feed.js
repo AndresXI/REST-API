@@ -1,6 +1,15 @@
 const { validationResult } = require('express-validator/check'); 
 const Post = require('../models/post'); 
+const fs = require('fs');
+const path = require('path'); 
 
+/** Helper function to delete images  */
+const clearImage = (filePath) => {
+  // construct file path to image
+  filePath = path.join(__dirname, '..', filePath); 
+  // Delete image
+  fs.unlink(filePath, err => console.log(err)); 
+}; 
 
 /** Route to fetch all posts from database */
 exports.getPosts = (req, res, next) => {
@@ -85,5 +94,58 @@ exports.getPost = (req, res, next) => {
       }
       next(err); 
     }); 
+}; 
+
+/** Controller action to edit post */
+exports.updatePost = (req, res, next) => {
+  // extract id form the request url 
+  const postId = req.params.postId; 
+  const errors = validationResult(req);
+  // Return a response if validation fails 
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation failed, input data is incorrect");
+    error.statusCode = 422;
+    throw error;
+  }
+  const title = req.body.title; 
+  const content = req.body.content; 
+  // Keep the existing image url if no file was uploaded 
+  let imageUrl = req.body.image; 
+  // If there is a file upload set the imageUrl accordingly 
+  if (req.file) {
+    imageUrl = req.file.path; 
+  }
+  if (!imageUrl) {
+    const error = new Error('No file picked, please make sure to upload a file'); 
+    error.statusCode = 422; 
+    throw error; 
+  }
+  Post.findById(postId)
+    .then(post => {
+      if (!post) {
+        const error = new Error('Could not find post');
+        error.statusCode = 404;
+        throw error; 
+      }
+      // Delete old image if url path is not the same
+      if (imageUrl !== post.imageUrl) {
+        clearImage(post.imageUrl); 
+      }
+      // Update post fields with extracted data 
+      post.title = title;
+      post.imageUrl = imageUrl;
+      post.content = content;
+      return post.save();  
+    })
+    .then(result => {
+      res.status(200).json({ message: 'POST UPDATED SUCCESSFULLY!', post: result }); 
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err); 
+    })
+
 }; 
 

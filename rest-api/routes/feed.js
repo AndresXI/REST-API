@@ -16,4 +16,10 @@ router.post('/post', [
 /** Route to view a single post */
 router.get('/post/:postId', feedController.getPost); 
 
+/** Route to edit posts */
+router.put('/post/:postId', [
+  body('title').trim().isLength({ min: 5 }),
+  body('content').trim().isLength({ min: 5 })
+], feedController.updatePost); 
+
 module.exports = router; 

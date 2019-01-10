@@ -30,6 +30,7 @@ class SinglePost extends Component {
           author: resData.post.creator.name,
           date: new Date(resData.post.createdAt).toLocaleDateString('en-US'),
           content: resData.post.content,
+          // Path url to view a single image 
           image: 'http://localhost:8080/' + resData.post.imageUrl
         });
       })
