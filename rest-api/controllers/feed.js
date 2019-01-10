@@ -145,7 +145,30 @@ exports.updatePost = (req, res, next) => {
         err.statusCode = 500;
       }
       next(err); 
-    })
-
+    });
 }; 
+
+/** Route to delete post */
+exports.deletePost = (req, res, next) => {
+  // extract post id from request params
+  const postId = req.params.postId; 
+  Post.findById(postId)
+    .then(post => {
+      if (!post) {
+        const error = new Error('Could not find post');
+        error.statusCode = 404;
+        throw error;
+      }
+      // check if the creator is the currently logged in user
+      clearImage(post.imageUrl);
+      return Post.findByIdAndRemove(postId); 
+    })
+    .then(result => {
+      console.log(result);
+      res.status(200).json({ message: 'POST DELETED SUCCESSFULLY!' });
+    })
+    .catch(err => {
+
+    });
+}
 

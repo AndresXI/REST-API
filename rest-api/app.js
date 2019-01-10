@@ -63,7 +63,7 @@ app.use((error, req, res, next) => {
 }); 
 
 /** Establish connection with mongoose */
-mongoose.connect()
+mongoose.connect('')
   .then(result => {
     console.log('Successfully connected to database, listening on port: 8080. Happy Coding!')
     app.listen(8080); 
