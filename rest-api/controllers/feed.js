@@ -11,19 +11,33 @@ const clearImage = (filePath) => {
   fs.unlink(filePath, err => console.log(err)); 
 }; 
 
+
 /** Route to fetch all posts from database */
 exports.getPosts = (req, res, next) => {
-  // Find all posts from database
+  // Current page number coming query parameters
+  const currentPage = req.query.page || 1;
+  const perPage = 2;
+  let totalItems;
+  // Find all documents
   Post.find()
+    .countDocuments()
+    .then(count => {
+      totalItems = count;
+      // Find all posts from database
+      return Post.find()
+        .skip((currentPage - 1 ) * perPage)
+        .limit(perPage)
+    })
     .then(posts => {
-      res.status(200).json({message: 'Fetched posts successfully', posts: posts}); 
+      res.status(200)
+        .json({ message: 'FETCHED POSTS SUCCESSFULLY!', posts: posts, totalItems: totalItems}); 
     })
     .catch(err => {
       if (!err.statusCode) {
         err.statusCode = 500;
       }
       next(err); 
-    }); 
+    })
 }; 
 
 /** Route to store post in database */
