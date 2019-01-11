@@ -37,7 +37,7 @@ exports.getPosts = (req, res, next) => {
         err.statusCode = 500;
       }
       next(err); 
-    })
+    });
 }; 
 
 /** Route to store post in database */

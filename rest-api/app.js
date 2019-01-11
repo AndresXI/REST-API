@@ -3,6 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser'); 
 const multer = require('multer'); 
 const feedRoutes = require('./routes/feed'); 
+const authRoutes = require('./routes/auth');
 const mongoose = require('mongoose'); 
 const cors = require('cors'); 
 
@@ -53,17 +54,20 @@ app.use((req, res, next) => {
 
 /** Register feed routes */
 app.use('/feed', feedRoutes); 
+/** Register authentication routes */
+app.use('/auth', authRoutes); 
 /** Middleware to handle errors 
   execute whenever an error is thrown */
 app.use((error, req, res, next) => {
   console.log(error); 
   const status = error.statusCode || 500; 
   const message = error.message; 
-  res.status(status).json({message: message}); 
+  const data = error.data;
+  res.status(status).json({message: message, data: data}); 
 }); 
 
 /** Establish connection with mongoose */
-mongoose.connect('')
+mongoose.connect()
   .then(result => {
     console.log('Successfully connected to database, listening on port: 8080. Happy Coding!')
     app.listen(8080); 
