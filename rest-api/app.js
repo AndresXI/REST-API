@@ -5,6 +5,7 @@ const multer = require('multer');
 const feedRoutes = require('./routes/feed'); 
 const authRoutes = require('./routes/auth');
 const mongoose = require('mongoose'); 
+const dotEnv = require('dotenv').config();
 const cors = require('cors'); 
 
 const app = express(); 
@@ -67,9 +68,9 @@ app.use((error, req, res, next) => {
 }); 
 
 /** Establish connection with mongoose */
-mongoose.connect()
+mongoose.connect(process.env.DB_URL)
   .then(result => {
-    console.log('Successfully connected to database, listening on port: 8080. Happy Coding!')
-    app.listen(8080); 
+    console.log(`Connected to database successfully, listening on port: ${process.env.PORT}. Happy Coding!.`)
+    app.listen(process.env.PORT); 
   })
   .catch(err => console.log(err)); 

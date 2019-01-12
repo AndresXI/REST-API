@@ -4,7 +4,7 @@ const { body } = require("express-validator/check");
 const User = require('../models/user');
 const authController = require('../controllers/auth');
 
-
+/** Route to signup a user */
 router.put('/signup', [
   body('email')
     .isEmail()
@@ -27,5 +27,8 @@ router.put('/signup', [
     .not()
     .isEmpty()    
 ], authController.signup); 
+
+/** Route to authenticate a user */
+router.post('/login', );
 
 module.exports = router; 
