@@ -16,7 +16,11 @@ class SinglePost extends Component {
     // extract post id from url 
     const postId = this.props.match.params.postId;
     // Target get post endpoint 
-    fetch('http://localhost:8080/feed/post/' + postId)
+    fetch('http://localhost:8080/feed/post/' + postId, {
+      headers: {
+        Authorization: 'Bearer ' + this.props.token
+      }
+    })
       .then(res => {
         if (res.status !== 200) {
           throw new Error('Failed to fetch status');

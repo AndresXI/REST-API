@@ -8,16 +8,16 @@ module.exports = (req, res, next) => {
     throw error;
   }
   // Get the token from our request headers
-  const token = authHeader.split('')[1];
+  const token = authHeader.split(' ')[1];
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, 'secretkey');
+    decodedToken = jwt.verify(token, "secretkey");
   } catch(err) {
-    error.statusCode = 500;
+    err.statusCode = 500;
     throw err;
   }
   if (!decodedToken) {
-    new error = new Error('Not Authenticated');
+    const error = new Error('Not Authenticated');
     error.statusCode = 401;
     throw error;
   }

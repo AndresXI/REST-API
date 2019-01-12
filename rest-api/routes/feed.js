@@ -9,21 +9,22 @@ const router = express.Router();
 router.get('/posts', isAuth, feedController.getPosts); 
 
 /** POST: /feed/post */
-router.post('/post', [
+router.post('/post', isAuth, [
   body('title').trim().isLength({min: 5}),
   body('content').trim().isLength({min: 5})
 ], feedController.createPost); 
 
 /** Route to view a single post */
-router.get('/post/:postId', feedController.getPost); 
+router.get('/post/:postId', isAuth, feedController.getPost); 
 
 /** Route to edit posts */
-router.put('/post/:postId', [
+router.put('/post/:postId', isAuth, [
   body('title').trim().isLength({ min: 5 }),
   body('content').trim().isLength({ min: 5 })
 ], feedController.updatePost); 
 
 /** Route to delete posts */
-router.delete('/post/:postId', feedController.deletePost); 
+router.delete('/post/:postId', isAuth, feedController.deletePost); 
+
 
 module.exports = router; 
